@@ -1,0 +1,22 @@
+{
+  "name": "senior-web-concepts-js-node",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "JavaScript/Node.js concept map for senior frontend and backend engineering topics.",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "generate": "node scripts/generate-docs.js",
+    "list": "node scripts/list-topics.js",
+    "example:abort": "node examples/frontend/abort-controller.js",
+    "example:streams": "node examples/frontend/streaming-fetch-response.js",
+    "example:event-loop": "node examples/frontend/event-loop-micro-vs-macro.js",
+    "example:idempotency": "node examples/backend/idempotency-key-api.js",
+    "example:rate-limit": "node examples/backend/token-bucket-rate-limit.js",
+    "example:saga": "node examples/backend/saga-pattern.js",
+    "example:hashing": "node examples/backend/consistent-hashing.js",
+    "example:bloom": "node examples/backend/bloom-filter.js"
+  }
+}
