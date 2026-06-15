@@ -37,6 +37,9 @@ jobs:
         run: |
           npm run example:capacity
           npm run example:vector-search
+          npm run example:query-cost
+          npm run example:rollout
+          npm run example:cidr
 
       - name: Verify docs are committed
         run: |
