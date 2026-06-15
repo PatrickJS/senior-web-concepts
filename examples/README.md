@@ -11,4 +11,6 @@ npm run example:rate-limit
 npm run example:saga
 npm run example:hashing
 npm run example:bloom
+npm run example:capacity
+npm run example:vector-search
 ```

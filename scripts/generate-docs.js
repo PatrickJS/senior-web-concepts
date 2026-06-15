@@ -3,6 +3,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import frontend from '../src/concepts/frontend.js';
 import backend from '../src/concepts/backend.js';
+import systemDesign from '../src/concepts/system-design.js';
+import aiEngineering from '../src/concepts/ai-engineering.js';
 import snippets from '../src/examples/snippets.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -34,6 +36,54 @@ const backendGroups = new Map([
   ['Caching, hashing, and approximate data structures', 'Use this group to design fast paths that remain correct enough under invalidation, shard movement, cardinality estimation, and hot-key pressure.']
 ]);
 
+const systemDesignGroups = new Map([
+  ['Design process and trade-offs', 'Use this group to turn product goals into explicit requirements, constraints, trade-offs, and decisions that can be revisited later.'],
+  ['Scale, capacity, and latency', 'Use this group to size traffic, storage, throughput, latency budgets, queues, caches, and concurrency before selecting technology.'],
+  ['Boundaries and topology', 'Use this group to place client, edge, API, service, data, control-plane, and data-plane responsibilities deliberately.'],
+  ['Data, consistency, and workflows', 'Use this group to connect access patterns, consistency needs, partitions, freshness, events, and workflow recovery into one design.'],
+  ['Reliability and operations', 'Use this group to reason about failure modes, overload behavior, fallback, disaster recovery, observability, alerts, and releases.'],
+  ['Security, abuse, and governance', 'Use this group to protect system boundaries, secrets, tenants, quotas, abuse paths, and operational policy surfaces.'],
+  ['Cost, evolution, and decision records', 'Use this group to keep architecture economically grounded and evolvable through buy/build calls, migrations, and recorded decisions.']
+]);
+
+const aiEngineeringGroups = new Map([
+  ['LLM fundamentals and model behavior', 'Use this group to understand how model limits, sampling, latency, throughput, and capability fit affect production AI features.'],
+  ['Prompting and context engineering', 'Use this group to assemble instructions, variables, examples, source context, and conversation state without losing control of the task.'],
+  ['Structured outputs and tool use', 'Use this group to make model interactions machine-checkable with schemas, tool contracts, validation, dispatch, and permission boundaries.'],
+  ['Retrieval and knowledge grounding', 'Use this group to connect embeddings, chunking, metadata, retrieval, reranking, and source-of-truth rules into grounded answers.'],
+  ['Evaluation and observability', 'Use this group to measure AI behavior with datasets, traces, prompt regression tests, judge calibration, and production quality signals.'],
+  ['Safety, security, and data handling', 'Use this group to reduce prompt injection, unsafe output, privacy leakage, and unclear escalation behavior in AI-backed systems.'],
+  ['Agentic workflows', 'Use this group to design loops that plan, act, observe, persist state, ask for human review, and recover from partial progress.'],
+  ['Model operations, cost, and rollout', 'Use this group to route models, control cost, cache safely, stream responses, and roll out AI features with measurable risk.']
+]);
+
+const domains = [
+  {
+    domain: 'Frontend',
+    folder: 'frontend',
+    records: frontend,
+    groups: frontendGroups
+  },
+  {
+    domain: 'Backend',
+    folder: 'backend',
+    records: backend,
+    groups: backendGroups
+  },
+  {
+    domain: 'System Design',
+    folder: 'system-design',
+    records: systemDesign,
+    groups: systemDesignGroups
+  },
+  {
+    domain: 'AI Engineering',
+    folder: 'ai-engineering',
+    records: aiEngineering,
+    groups: aiEngineeringGroups
+  }
+];
+
 const slugify = (value) => value
   .toLowerCase()
   .replace(/&/g, 'and')
@@ -50,9 +100,23 @@ const byGroup = (records) => records.reduce((groups, record) => {
 
 const topicFileName = (record) => `${slugify(record.title)}.md`;
 
+const renderDiagram = (diagram) => {
+  if (!diagram) return '';
+  return `## Architecture sketch\n\n\`\`\`mermaid\n${diagram.trim()}\n\`\`\`\n\n`;
+};
+
+const renderRelated = (related) => {
+  if (!related?.length) return '';
+  const lines = ['## Related concepts', '', ...related.map((item) => `- ${item}`), ''];
+  return `${lines.join('\n')}\n`;
+};
+
 const topicMarkdown = ({ domain, groups, record }) => {
   const snippet = snippets[record.example];
+  if (!snippet) throw new Error(`Missing snippet for ${domain}: ${record.title} (${record.example})`);
+
   const note = groups.get(record.group);
+  if (!note) throw new Error(`Missing group note for ${domain}: ${record.group}`);
 
   return `# ${record.title}\n\n` +
     `**Domain:** ${domain}\n` +
@@ -60,6 +124,8 @@ const topicMarkdown = ({ domain, groups, record }) => {
     `**Example environment:** ${snippet.environment}\n\n` +
     `## Summary\n\n${record.summary}\n\n` +
     `## Why it matters\n\n${note}\n\n` +
+    renderDiagram(record.diagram) +
+    renderRelated(record.related) +
     `## JavaScript example\n\n` +
     '```js\n' + snippet.code + '```\n\n' +
     `## Explain it clearly\n\n` +
@@ -95,7 +161,8 @@ const writeDomain = async ({ domain, folder, records, groups }) => {
   }
 };
 
-await writeDomain({ domain: 'Frontend', folder: 'frontend', records: frontend, groups: frontendGroups });
-await writeDomain({ domain: 'Backend', folder: 'backend', records: backend, groups: backendGroups });
+for (const domain of domains) {
+  await writeDomain(domain);
+}
 
-console.log(`Generated ${frontend.length + backend.length} topic pages.`);
+console.log(`Generated ${domains.reduce((total, domain) => total + domain.records.length, 0)} topic pages.`);

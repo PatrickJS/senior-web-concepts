@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "JavaScript/Node.js concept map for senior frontend and backend engineering topics.",
+  "description": "JavaScript/Node.js concept and skill map for senior web, system design, and AI engineering topics.",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -17,6 +17,8 @@
     "example:rate-limit": "node examples/backend/token-bucket-rate-limit.js",
     "example:saga": "node examples/backend/saga-pattern.js",
     "example:hashing": "node examples/backend/consistent-hashing.js",
-    "example:bloom": "node examples/backend/bloom-filter.js"
+    "example:bloom": "node examples/backend/bloom-filter.js",
+    "example:capacity": "node examples/system-design/capacity-estimation.js",
+    "example:vector-search": "node examples/ai-engineering/vector-search.js"
   }
 }
