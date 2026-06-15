@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** API design, auth, and edge controls
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Frontend architecture and rendering models
+**Role tags:** sr, frontend
 **Example environment:** node
 
 ## Summary

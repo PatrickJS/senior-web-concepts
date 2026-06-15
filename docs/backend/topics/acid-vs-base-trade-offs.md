@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** Databases, storage, and transactions
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

@@ -2,6 +2,7 @@
 
 **Domain:** System Design
 **Group:** Data, consistency, and workflows
+**Role tags:** sr, system
 **Example environment:** node
 
 ## Summary

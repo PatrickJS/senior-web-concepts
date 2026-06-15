@@ -13,4 +13,7 @@ npm run example:hashing
 npm run example:bloom
 npm run example:capacity
 npm run example:vector-search
+npm run example:query-cost
+npm run example:rollout
+npm run example:cidr
 ```

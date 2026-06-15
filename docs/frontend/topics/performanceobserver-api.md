@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Performance and Web Vitals
+**Role tags:** sr, frontend
 **Example environment:** node
 
 ## Summary

@@ -2,6 +2,7 @@
 
 **Domain:** System Design
 **Group:** Cost, evolution, and decision records
+**Role tags:** sr, system
 **Example environment:** node
 
 ## Summary

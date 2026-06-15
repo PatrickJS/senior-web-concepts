@@ -1257,5 +1257,924 @@ for await (const chunk of streamWords('partial output feels faster')) process.st
 
 console.log(enabledForUser({ bucket: 0.12, rolloutPercent: 0.2, evalGatePassed: true }));
 `
+  },
+  "data-relational-schema": {
+    "environment": "node",
+    "code": `const tables = {
+  users: ['id primary key', 'email unique not null'],
+  orders: ['id primary key', 'user_id references users(id)', 'status check']
+};
+
+console.log(tables);
+`
+  },
+  "data-sql-joins": {
+    "environment": "node",
+    "code": `const users = [{ id: 1, email: 'a@example.com' }];
+const orders = [{ id: 10, userId: 1, total: 42 }];
+
+const rows = orders.map((order) => ({
+  ...order,
+  user: users.find((user) => user.id === order.userId)
+}));
+console.log(rows);
+`
+  },
+  "data-normalization": {
+    "environment": "node",
+    "code": `const normalized = {
+  users: new Map([[1, { id: 1, name: 'Ada' }]]),
+  orders: [{ id: 10, userId: 1 }]
+};
+
+const denormalized = normalized.orders.map((order) => ({
+  ...order,
+  userName: normalized.users.get(order.userId).name
+}));
+console.log(denormalized);
+`
+  },
+  "data-constraints": {
+    "environment": "node",
+    "code": `const validateUser = (user) => {
+  if (!user.email) throw new Error('email is required');
+  if (!user.email.includes('@')) throw new Error('email must be valid');
+  return user;
+};
+
+console.log(validateUser({ id: 1, email: 'a@example.com' }));
+`
+  },
+  "data-temporal-modeling": {
+    "environment": "node",
+    "code": `const priceAt = (prices, at) => prices.find((price) => {
+  return price.validFrom <= at && (!price.validTo || at < price.validTo);
+});
+
+console.log(priceAt([{ amount: 20, validFrom: 0, validTo: 100 }, { amount: 25, validFrom: 100 }], 120));
+`
+  },
+  "data-covering-index": {
+    "environment": "node",
+    "code": `const query = {
+  where: ['tenant_id', 'status'],
+  orderBy: ['created_at'],
+  select: ['id', 'created_at']
+};
+
+const index = ['tenant_id', 'status', 'created_at', 'id'];
+console.log(query.select.every((field) => index.includes(field)));
+`
+  },
+  "data-query-plan": {
+    "environment": "node",
+    "code": `const plan = [
+  { node: 'Index Scan', estimatedRows: 100, actualRows: 120 },
+  { node: 'Nested Loop', estimatedRows: 100, actualRows: 5000 }
+];
+
+console.log(plan.filter((step) => step.actualRows > step.estimatedRows * 10));
+`
+  },
+  "data-cardinality-estimate": {
+    "environment": "node",
+    "code": `const estimateRows = ({ totalRows, selectivity }) => totalRows * selectivity;
+
+console.log(estimateRows({ totalRows: 2_000_000, selectivity: 0.001 }));
+`
+  },
+  "data-pool-sizing": {
+    "environment": "node",
+    "code": `const poolSize = ({ instances, dbMaxConnections, reserved = 10 }) => {
+  return Math.floor((dbMaxConnections - reserved) / instances);
+};
+
+console.log(poolSize({ instances: 8, dbMaxConnections: 200 }));
+`
+  },
+  "data-slow-query-rank": {
+    "environment": "node",
+    "code": `const queries = [
+  { sql: 'select orders', calls: 1000, totalMs: 5000 },
+  { sql: 'select users', calls: 100, totalMs: 2000 }
+];
+
+console.log(queries.toSorted((a, b) => b.totalMs - a.totalMs)[0]);
+`
+  },
+  "data-transaction-boundary": {
+    "environment": "node",
+    "code": `const transfer = async (db, from, to, amount) => db.transaction(async (tx) => {
+  await tx.accounts.debit(from, amount);
+  await tx.accounts.credit(to, amount);
+  await tx.ledger.insert({ from, to, amount });
+});
+`
+  },
+  "data-expand-contract": {
+    "environment": "node",
+    "code": `const migrationPlan = [
+  'add nullable new column',
+  'deploy dual writes',
+  'backfill existing rows',
+  'read from new column',
+  'drop old column'
+];
+
+console.log(migrationPlan);
+`
+  },
+  "data-online-backfill": {
+    "environment": "node",
+    "code": `const backfillBatch = async ({ rows, checkpoint, write }) => {
+  const batch = rows.filter((row) => row.id > checkpoint).slice(0, 100);
+  for (const row of batch) await write(row);
+  return batch.at(-1)?.id ?? checkpoint;
+};
+`
+  },
+  "data-optimistic-concurrency": {
+    "environment": "node",
+    "code": `const updateIfVersionMatches = (row, expectedVersion, patch) => {
+  if (row.version !== expectedVersion) throw new Error('conflict');
+  return { ...row, ...patch, version: row.version + 1 };
+};
+
+console.log(updateIfVersionMatches({ id: 1, version: 3 }, 3, { status: 'paid' }));
+`
+  },
+  "data-idempotent-write": {
+    "environment": "node",
+    "code": `const writes = new Map();
+
+const writeOnce = (operationId, value) => {
+  if (!writes.has(operationId)) writes.set(operationId, value);
+  return writes.get(operationId);
+};
+
+console.log(writeOnce('op-1', { ok: true }));
+`
+  },
+  "data-shard-strategy": {
+    "environment": "node",
+    "code": `const shardForTenant = (tenantId, shardCount) => {
+  const hash = [...tenantId].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return hash % shardCount;
+};
+
+console.log(shardForTenant('tenant-acme', 16));
+`
+  },
+  "data-replica-routing": {
+    "environment": "node",
+    "code": `const chooseReadTarget = ({ requiresFresh, replicaLagMs }) => {
+  if (requiresFresh || replicaLagMs > 500) return 'primary';
+  return 'replica';
+};
+
+console.log(chooseReadTarget({ requiresFresh: false, replicaLagMs: 120 }));
+`
+  },
+  "data-pitr-window": {
+    "environment": "node",
+    "code": `const canRecoverTo = ({ backupStart, logEnd, target }) => {
+  return backupStart <= target && target <= logEnd;
+};
+
+console.log(canRecoverTo({ backupStart: 100, logEnd: 200, target: 150 }));
+`
+  },
+  "data-search-index": {
+    "environment": "node",
+    "code": `const toSearchDocument = (product) => ({
+  id: product.id,
+  text: [product.name, product.description].join(' '),
+  filters: { tenantId: product.tenantId, active: product.active }
+});
+
+console.log(toSearchDocument({ id: 1, name: 'Desk', description: 'Oak', tenantId: 'acme', active: true }));
+`
+  },
+  "data-time-series-rollup": {
+    "environment": "node",
+    "code": `const rollup = (points) => points.reduce((bucket, point) => {
+  const minute = Math.floor(point.time / 60_000) * 60_000;
+  bucket.set(minute, (bucket.get(minute) ?? 0) + point.value);
+  return bucket;
+}, new Map());
+
+console.log([...rollup([{ time: 1, value: 2 }, { time: 20, value: 3 }])]);
+`
+  },
+  "data-oltp-olap": {
+    "environment": "node",
+    "code": `const chooseStore = ({ queryType, writeLatencySensitive }) => {
+  if (queryType === 'aggregate' && !writeLatencySensitive) return 'olap';
+  return 'oltp';
+};
+
+console.log(chooseStore({ queryType: 'aggregate', writeLatencySensitive: false }));
+`
+  },
+  "data-cdc-event": {
+    "environment": "node",
+    "code": `const toChangeEvent = ({ table, op, before, after, lsn }) => ({
+  table,
+  op,
+  key: after?.id ?? before.id,
+  after,
+  lsn
+});
+
+console.log(toChangeEvent({ table: 'users', op: 'update', after: { id: 1 }, lsn: 42 }));
+`
+  },
+  "data-etl-elt": {
+    "environment": "node",
+    "code": `const choosePipeline = ({ rawRetentionNeeded, warehouseCanTransform }) => {
+  if (rawRetentionNeeded && warehouseCanTransform) return 'elt';
+  return 'etl';
+};
+
+console.log(choosePipeline({ rawRetentionNeeded: true, warehouseCanTransform: true }));
+`
+  },
+  "data-warehouse-fact": {
+    "environment": "node",
+    "code": `const factOrder = ({ order, customer }) => ({
+  grain: 'one row per order',
+  orderId: order.id,
+  customerId: customer.id,
+  revenueCents: order.totalCents,
+  orderedAt: order.createdAt
+});
+`
+  },
+  "data-semantic-metric": {
+    "environment": "node",
+    "code": `const metric = {
+  name: 'gross_revenue',
+  expression: 'sum(order_total)',
+  grain: 'order',
+  filters: ['status = paid']
+};
+
+console.log(metric);
+`
+  },
+  "data-quality-check": {
+    "environment": "node",
+    "code": `const checkFreshness = ({ lastLoadedAt, maxAgeMs, now = Date.now() }) => {
+  return now - lastLoadedAt <= maxAgeMs;
+};
+
+console.log(checkFreshness({ lastLoadedAt: Date.now() - 1000, maxAgeMs: 5000 }));
+`
+  },
+  "data-late-events": {
+    "environment": "node",
+    "code": `const acceptEvent = ({ eventTime, watermark }) => {
+  if (eventTime < watermark) return 'late-correction';
+  return 'on-time';
+};
+
+console.log(acceptEvent({ eventTime: 100, watermark: 120 }));
+`
+  },
+  "data-retention-policy": {
+    "environment": "node",
+    "code": `const retentionAction = ({ ageDays }) => {
+  if (ageDays > 2555) return 'delete';
+  if (ageDays > 365) return 'archive';
+  return 'keep-hot';
+};
+
+console.log(retentionAction({ ageDays: 500 }));
+`
+  },
+  "data-lineage": {
+    "environment": "node",
+    "code": `const lineage = {
+  source: 'orders',
+  transform: 'daily_revenue',
+  downstream: ['executive_dashboard', 'forecast_model']
+};
+
+console.log(lineage);
+`
+  },
+  "data-vector-retrieval": {
+    "environment": "node",
+    "code": `const withinMetadata = (doc, filter) => Object.entries(filter).every(([key, value]) => doc.metadata[key] === value);
+
+const results = [{ id: 1, score: 0.91, metadata: { tenant: 'acme' } }]
+  .filter((doc) => withinMetadata(doc, { tenant: 'acme' }));
+console.log(results);
+`
+  },
+  "platform-branch-protection": {
+    "environment": "node",
+    "code": `const protection = {
+  requiredReviews: 1,
+  requiredChecks: ['Generated docs'],
+  allowForcePushes: false
+};
+
+console.log(protection);
+`
+  },
+  "platform-ci-pipeline": {
+    "environment": "node",
+    "code": `const pipeline = ['install', 'syntax', 'unit', 'generate', 'package'];
+const shouldRun = (step, changed) => step !== 'package' || changed.includes('package.json');
+
+console.log(pipeline.filter((step) => shouldRun(step, ['src/concepts/data-storage.js'])));
+`
+  },
+  "platform-drift-check": {
+    "environment": "node",
+    "code": `const verifyGeneratedClean = ({ statusLines }) => {
+  return statusLines.filter((line) => line.startsWith(' M docs/') || line.startsWith('?? docs/'));
+};
+
+console.log(verifyGeneratedClean({ statusLines: [' M docs/data-storage/README.md'] }));
+`
+  },
+  "platform-deploy-strategy": {
+    "environment": "node",
+    "code": `const chooseStrategy = ({ reversible, blastRadius, hasMigration }) => {
+  if (hasMigration) return 'feature flag plus expand-contract';
+  if (reversible && blastRadius === 'low') return 'rolling';
+  return 'canary';
+};
+
+console.log(chooseStrategy({ reversible: true, blastRadius: 'high', hasMigration: false }));
+`
+  },
+  "platform-rollback-plan": {
+    "environment": "node",
+    "code": `const rollbackAllowed = ({ schemaCompatible, externalSideEffects }) => {
+  return schemaCompatible && !externalSideEffects;
+};
+
+console.log(rollbackAllowed({ schemaCompatible: true, externalSideEffects: false }));
+`
+  },
+  "platform-iac-state": {
+    "environment": "node",
+    "code": `const stateLock = { holder: 'ci-run-123', expiresAt: Date.now() + 300_000 };
+const canApply = (lock) => !lock || lock.expiresAt < Date.now();
+
+console.log(canApply(stateLock));
+`
+  },
+  "platform-environment-promotion": {
+    "environment": "node",
+    "code": `const promote = ({ artifact, from, to }) => ({
+  artifact,
+  previousEnvironment: from,
+  nextEnvironment: to
+});
+
+console.log(promote({ artifact: 'app@sha256:abc', from: 'staging', to: 'production' }));
+`
+  },
+  "platform-network-policy": {
+    "environment": "node",
+    "code": `const allow = ({ source, target, port }) => {
+  return source === 'api' && target === 'database' && port === 5432;
+};
+
+console.log(allow({ source: 'api', target: 'database', port: 5432 }));
+`
+  },
+  "platform-dns-record": {
+    "environment": "node",
+    "code": `const record = {
+  name: 'api.example.com',
+  type: 'CNAME',
+  value: 'edge.example.net',
+  ttlSeconds: 300
+};
+
+console.log(record);
+`
+  },
+  "platform-health-check": {
+    "environment": "node",
+    "code": `const health = ({ dbReady, acceptingTraffic }) => ({
+  liveness: true,
+  readiness: dbReady && acceptingTraffic
+});
+
+console.log(health({ dbReady: true, acceptingTraffic: false }));
+`
+  },
+  "platform-image-policy": {
+    "environment": "node",
+    "code": `const imagePolicy = {
+  runAsNonRoot: true,
+  readOnlyRootFilesystem: true,
+  disallowLatestTag: true
+};
+
+console.log(imagePolicy);
+`
+  },
+  "platform-k8s-workload": {
+    "environment": "node",
+    "code": `const deployment = {
+  kind: 'Deployment',
+  spec: { replicas: 3, selector: { matchLabels: { app: 'api' } } }
+};
+
+console.log(deployment);
+`
+  },
+  "platform-autoscale-signal": {
+    "environment": "node",
+    "code": `const desiredReplicas = ({ queueDepth, targetDepthPerReplica }) => {
+  return Math.max(1, Math.ceil(queueDepth / targetDepthPerReplica));
+};
+
+console.log(desiredReplicas({ queueDepth: 950, targetDepthPerReplica: 100 }));
+`
+  },
+  "platform-mesh-decision": {
+    "environment": "node",
+    "code": `const needsMesh = ({ services, mtlsRequired, trafficPolicyComplex }) => {
+  return services > 20 && (mtlsRequired || trafficPolicyComplex);
+};
+
+console.log(needsMesh({ services: 30, mtlsRequired: true, trafficPolicyComplex: false }));
+`
+  },
+  "platform-serverless-fit": {
+    "environment": "node",
+    "code": `const serverlessFit = ({ durationMs, coldStartSensitive, bursty }) => {
+  return durationMs < 30_000 && !coldStartSensitive && bursty;
+};
+
+console.log(serverlessFit({ durationMs: 500, coldStartSensitive: false, bursty: true }));
+`
+  },
+  "platform-secret-rotation": {
+    "environment": "node",
+    "code": `const activeSecrets = [
+  { id: 'old', expiresAt: 200 },
+  { id: 'new', expiresAt: 400 }
+];
+
+console.log(activeSecrets.filter((secret) => secret.expiresAt > 250));
+`
+  },
+  "platform-iam-policy": {
+    "environment": "node",
+    "code": `const policy = {
+  action: ['s3:GetObject'],
+  resource: ['arn:aws:s3:::app-prod-readonly/*'],
+  condition: { environment: 'prod' }
+};
+
+console.log(policy);
+`
+  },
+  "platform-provenance": {
+    "environment": "node",
+    "code": `const provenance = {
+  sourceCommit: 'abc123',
+  builder: 'github-actions',
+  artifactDigest: 'sha256:deadbeef'
+};
+
+console.log(provenance);
+`
+  },
+  "platform-policy-as-code": {
+    "environment": "node",
+    "code": `const denyPrivileged = (spec) => {
+  return spec.securityContext?.privileged === true ? ['privileged containers are denied'] : [];
+};
+
+console.log(denyPrivileged({ securityContext: { privileged: true } }));
+`
+  },
+  "platform-dependency-update": {
+    "environment": "node",
+    "code": `const updatePolicy = {
+  ecosystem: 'github-actions',
+  interval: 'weekly',
+  groupMinorAndPatch: true
+};
+
+console.log(updatePolicy);
+`
+  },
+  "platform-observability-baseline": {
+    "environment": "node",
+    "code": `const baseline = ['request_count', 'error_count', 'duration_ms', 'trace_id', 'service_version'];
+console.log(baseline.every((field) => typeof field === 'string'));
+`
+  },
+  "platform-alert-routing": {
+    "environment": "node",
+    "code": `const routeAlert = ({ service, severity }) => {
+  if (severity === 'page') return service.ownerOnCall;
+  return service.teamChannel;
+};
+
+console.log(routeAlert({ service: { ownerOnCall: 'payments-primary', teamChannel: '#payments' }, severity: 'page' }));
+`
+  },
+  "platform-incident-timeline": {
+    "environment": "node",
+    "code": `const timeline = [];
+const record = (event) => timeline.push({ at: new Date().toISOString(), event });
+
+record('declared incident');
+console.log(timeline);
+`
+  },
+  "platform-burn-rate": {
+    "environment": "node",
+    "code": `const burnRate = ({ errors, requests, budgetRatio }) => {
+  return (errors / requests) / budgetRatio;
+};
+
+console.log(burnRate({ errors: 50, requests: 10_000, budgetRatio: 0.001 }));
+`
+  },
+  "platform-runbook-check": {
+    "environment": "node",
+    "code": `const runbookReady = ({ owner, rollback, dashboards }) => {
+  return Boolean(owner && rollback && dashboards?.length);
+};
+
+console.log(runbookReady({ owner: 'platform', rollback: true, dashboards: ['api'] }));
+`
+  },
+  "platform-cost-allocation": {
+    "environment": "node",
+    "code": `const allocateCost = (lineItems) => lineItems.reduce((totals, item) => {
+  totals[item.team] = (totals[item.team] ?? 0) + item.cost;
+  return totals;
+}, {});
+
+console.log(allocateCost([{ team: 'api', cost: 10 }, { team: 'api', cost: 5 }]));
+`
+  },
+  "platform-idp-score": {
+    "environment": "node",
+    "code": `const adoptionScore = ({ servicesOnPlatform, totalServices }) => {
+  return servicesOnPlatform / totalServices;
+};
+
+console.log(adoptionScore({ servicesOnPlatform: 42, totalServices: 60 }));
+`
+  },
+  "platform-golden-path": {
+    "environment": "node",
+    "code": `const serviceTemplate = {
+  ci: ['syntax', 'test', 'generate'],
+  observability: ['logs', 'metrics', 'traces'],
+  ownership: ['team', 'runbook']
+};
+
+console.log(serviceTemplate);
+`
+  },
+  "platform-local-env": {
+    "environment": "node",
+    "code": `const localServices = ['api', 'database', 'queue'];
+const required = new Set(['api', 'database']);
+
+console.log(localServices.filter((service) => required.has(service)));
+`
+  },
+  "platform-flag-lifecycle": {
+    "environment": "node",
+    "code": `const staleFlags = (flags, now) => flags.filter((flag) => flag.expiresAt < now);
+
+console.log(staleFlags([{ name: 'checkout_v2', expiresAt: 100 }], 200));
+`
+  },
+  "platform-config-rollout": {
+    "environment": "node",
+    "code": `const configForUser = ({ userBucket, rollout, oldConfig, newConfig }) => {
+  return userBucket < rollout ? newConfig : oldConfig;
+};
+
+console.log(configForUser({ userBucket: 0.2, rollout: 0.5, oldConfig: 'v1', newConfig: 'v2' }));
+`
+  },
+  "platform-api-ergonomics": {
+    "environment": "node",
+    "code": `const platformResponse = ({ ok, value, error }) => ({
+  ok,
+  value,
+  error: error && { code: error.code, message: error.message }
+});
+
+console.log(platformResponse({ ok: false, error: { code: 'quota_exceeded', message: 'quota exceeded' } }));
+`
+  },
+  "network-cidr-planning": {
+    "environment": "node",
+    "code": `const addressesInSubnet = (prefix) => 2 ** (32 - prefix);
+const usableHosts = (prefix) => Math.max(0, addressesInSubnet(prefix) - 2);
+
+console.log({ cidr: '10.0.8.0/21', usableHosts: usableHosts(21) });
+`
+  },
+  "network-private-public-addressing": {
+    "environment": "node",
+    "code": `const isPrivateV4 = (address) => {
+  const [a, b] = address.split('.').map(Number);
+  return a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168);
+};
+
+console.log(isPrivateV4('10.12.4.9'));
+`
+  },
+  "network-route-table": {
+    "environment": "node",
+    "code": `const routes = [
+  { prefix: '10.0.0.0/8', nextHop: 'private-core' },
+  { prefix: '10.20.0.0/16', nextHop: 'app-vpc' },
+  { prefix: '0.0.0.0/0', nextHop: 'internet-gateway' }
+];
+
+console.log(routes.toSorted((a, b) => Number(b.prefix.split('/')[1]) - Number(a.prefix.split('/')[1]))[0]);
+`
+  },
+  "network-nat-egress": {
+    "environment": "node",
+    "code": `const natTable = new Map();
+
+const allocateEgress = ({ privateIp, privatePort, publicIp }) => {
+  const publicPort = 40_000 + natTable.size;
+  natTable.set(publicPort, { privateIp, privatePort });
+  return { publicIp, publicPort };
+};
+
+console.log(allocateEgress({ privateIp: '10.0.1.25', privatePort: 51320, publicIp: '203.0.113.10' }));
+`
+  },
+  "network-anycast-routing": {
+    "environment": "node",
+    "code": `const chooseAnycastSite = (measurements) => {
+  return measurements.toSorted((a, b) => a.rttMs - b.rttMs)[0];
+};
+
+console.log(chooseAnycastSite([
+  { site: 'iad', rttMs: 28 },
+  { site: 'sfo', rttMs: 71 }
+]));
+`
+  },
+  "network-dns-records": {
+    "environment": "node",
+    "code": `const record = {
+  name: 'api.example.com',
+  type: 'A',
+  values: ['203.0.113.20'],
+  ttlSeconds: 60
+};
+
+console.log(record);
+`
+  },
+  "network-dns-resolution": {
+    "environment": "node",
+    "code": `const resolutionPath = [
+  'stub resolver',
+  'recursive resolver',
+  'root server',
+  'tld server',
+  'authoritative server'
+];
+
+console.log(resolutionPath.join(' -> '));
+`
+  },
+  "network-tls-chain": {
+    "environment": "node",
+    "code": `const validateCertificate = ({ hostname, subjectAltNames, expiresAt }) => {
+  return subjectAltNames.includes(hostname) && Date.parse(expiresAt) > Date.now();
+};
+
+console.log(validateCertificate({
+  hostname: 'api.example.com',
+  subjectAltNames: ['api.example.com'],
+  expiresAt: '2030-01-01T00:00:00Z'
+}));
+`
+  },
+  "network-cdn-routing": {
+    "environment": "node",
+    "code": `const cacheKey = ({ host, path, acceptEncoding }) => {
+  return [host, path, acceptEncoding.includes('br') ? 'br' : 'identity'].join('|');
+};
+
+console.log(cacheKey({ host: 'www.example.com', path: '/app.js', acceptEncoding: 'gzip, br' }));
+`
+  },
+  "network-reverse-proxy": {
+    "environment": "node",
+    "code": `const forwardedHeaders = (request) => ({
+  host: request.headers.host,
+  originalFor: request.socket.remoteAddress,
+  forwardedProto: 'https'
+});
+
+console.log(forwardedHeaders({ headers: { host: 'api.example.com' }, socket: { remoteAddress: '203.0.113.7' } }));
+`
+  },
+  "network-tcp-handshake": {
+    "environment": "node",
+    "code": `const handshake = ['SYN', 'SYN-ACK', 'ACK'];
+const established = handshake.at(-1) === 'ACK';
+
+console.log({ handshake, established });
+`
+  },
+  "network-congestion-loss": {
+    "environment": "node",
+    "code": `const estimateRetransmitRate = ({ sent, retransmits }) => retransmits / sent;
+const lossSignal = estimateRetransmitRate({ sent: 10_000, retransmits: 45 });
+
+console.log({ lossSignal, investigate: lossSignal > 0.002 });
+`
+  },
+  "network-quic-migration": {
+    "environment": "node",
+    "code": `const session = { connectionId: 'cid-123', clientIp: '198.51.100.10' };
+const migrated = { ...session, clientIp: '198.51.100.44' };
+
+console.log(session.connectionId === migrated.connectionId);
+`
+  },
+  "network-mtu-pmtud": {
+    "environment": "node",
+    "code": `const fitsPathMtu = ({ payloadBytes, headersBytes, pathMtu }) => {
+  return payloadBytes + headersBytes <= pathMtu;
+};
+
+console.log(fitsPathMtu({ payloadBytes: 1400, headersBytes: 60, pathMtu: 1500 }));
+`
+  },
+  "network-load-balancer-algorithms": {
+    "environment": "node",
+    "code": `const leastConnections = (targets) => {
+  return targets.toSorted((a, b) => a.connections - b.connections)[0];
+};
+
+console.log(leastConnections([{ id: 'a', connections: 12 }, { id: 'b', connections: 3 }]));
+`
+  },
+  "network-firewall-rules": {
+    "environment": "node",
+    "code": `const rules = [
+  { action: 'allow', source: '10.0.0.0/8', port: 443 },
+  { action: 'deny', source: '0.0.0.0/0', port: 443 }
+];
+
+console.log(rules.find((rule) => rule.port === 443).action);
+`
+  },
+  "network-security-groups-acls": {
+    "environment": "node",
+    "code": `const controls = {
+  securityGroup: { stateful: true, scope: 'workload' },
+  networkAcl: { stateful: false, scope: 'subnet' }
+};
+
+console.log(controls);
+`
+  },
+  "network-vpn-connectivity": {
+    "environment": "node",
+    "code": `const hasOverlappingCidr = (left, right) => left === right;
+
+console.log(hasOverlappingCidr('10.10.0.0/16', '10.10.0.0/16'));
+`
+  },
+  "network-zero-trust-access": {
+    "environment": "node",
+    "code": `const allowAccess = ({ user, deviceHealthy, service }) => {
+  return user.groups.includes(service.requiredGroup) && deviceHealthy;
+};
+
+console.log(allowAccess({ user: { groups: ['prod-read'] }, deviceHealthy: true, service: { requiredGroup: 'prod-read' } }));
+`
+  },
+  "network-ddos-scrubbing": {
+    "environment": "node",
+    "code": `const shouldScrub = ({ requestsPerSecond, baselineRps }) => {
+  return requestsPerSecond > baselineRps * 5;
+};
+
+console.log(shouldScrub({ requestsPerSecond: 60_000, baselineRps: 8_000 }));
+`
+  },
+  "network-transit-topology": {
+    "environment": "node",
+    "code": `const topology = {
+  hub: 'transit-gateway',
+  spokes: ['prod-vpc', 'analytics-vpc', 'shared-services-vpc']
+};
+
+console.log(topology.spokes.includes('prod-vpc'));
+`
+  },
+  "network-service-discovery": {
+    "environment": "node",
+    "code": `const records = [
+  { name: 'api.service.local', target: '10.0.1.10', healthy: true },
+  { name: 'api.service.local', target: '10.0.2.10', healthy: false }
+];
+
+console.log(records.filter((record) => record.healthy));
+`
+  },
+  "network-gateway-design": {
+    "environment": "node",
+    "code": `const gatewayPolicy = {
+  ingress: ['tls-termination', 'waf', 'rate-limit'],
+  egress: ['allowlist', 'audit-log']
+};
+
+console.log(gatewayPolicy);
+`
+  },
+  "network-multi-region-failover": {
+    "environment": "node",
+    "code": `const chooseRegion = (regions) => {
+  return regions.find((region) => region.healthy && region.replicationLagSeconds < 30);
+};
+
+console.log(chooseRegion([{ name: 'us-east', healthy: false, replicationLagSeconds: 0 }, { name: 'us-west', healthy: true, replicationLagSeconds: 12 }]));
+`
+  },
+  "network-dual-stack": {
+    "environment": "node",
+    "code": `const dnsAnswers = {
+  A: ['203.0.113.10'],
+  AAAA: ['2001:db8::10']
+};
+
+console.log(Object.keys(dnsAnswers));
+`
+  },
+  "network-packet-capture": {
+    "environment": "node",
+    "code": `const captureFilter = {
+  interface: 'eth0',
+  expression: 'tcp port 443 and host 203.0.113.10',
+  seconds: 30
+};
+
+console.log(captureFilter);
+`
+  },
+  "network-traceroute-diagnosis": {
+    "environment": "node",
+    "code": `const hops = [
+  { ttl: 1, rttMs: 2 },
+  { ttl: 2, rttMs: 4 },
+  { ttl: 3, rttMs: 85 }
+];
+
+console.log(hops.find((hop, index) => index > 0 && hop.rttMs - hops[index - 1].rttMs > 50));
+`
+  },
+  "network-synthetic-probes": {
+    "environment": "node",
+    "code": `const probeResult = {
+  region: 'sfo',
+  dnsMs: 18,
+  tlsMs: 42,
+  firstByteMs: 96,
+  ok: true
+};
+
+console.log(probeResult.ok && probeResult.firstByteMs < 200);
+`
+  },
+  "network-reliability-slo": {
+    "environment": "node",
+    "code": `const availability = ({ successfulProbes, totalProbes }) => successfulProbes / totalProbes;
+const sloMet = availability({ successfulProbes: 99_950, totalProbes: 100_000 }) >= 0.999;
+
+console.log({ sloMet });
+`
+  },
+  "network-partition-triage": {
+    "environment": "node",
+    "code": `const triageOrder = ['dns', 'tcp-connect', 'tls-handshake', 'load-balancer-health', 'service-readiness'];
+const nextCheck = triageOrder[0];
+
+console.log(nextCheck);
+`
   }
 };

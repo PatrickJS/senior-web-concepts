@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** Caching, hashing, and approximate data structures
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

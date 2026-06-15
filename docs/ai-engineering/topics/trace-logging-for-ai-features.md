@@ -2,6 +2,7 @@
 
 **Domain:** AI Engineering
 **Group:** Evaluation and observability
+**Role tags:** sr, ai
 **Example environment:** node
 
 ## Summary

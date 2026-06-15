@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Input and accessibility
+**Role tags:** sr, frontend
 **Example environment:** browser
 
 ## Summary

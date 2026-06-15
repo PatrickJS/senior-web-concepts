@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** Messaging, streams, and event-driven systems
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

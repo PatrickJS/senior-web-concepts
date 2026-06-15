@@ -5,6 +5,9 @@ import frontend from '../src/concepts/frontend.js';
 import backend from '../src/concepts/backend.js';
 import systemDesign from '../src/concepts/system-design.js';
 import aiEngineering from '../src/concepts/ai-engineering.js';
+import dataStorage from '../src/concepts/data-storage.js';
+import platformEngineering from '../src/concepts/platform-engineering.js';
+import networkEngineering from '../src/concepts/network-engineering.js';
 import snippets from '../src/examples/snippets.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -57,30 +60,81 @@ const aiEngineeringGroups = new Map([
   ['Model operations, cost, and rollout', 'Use this group to route models, control cost, cache safely, stream responses, and roll out AI features with measurable risk.']
 ]);
 
+const dataStorageGroups = new Map([
+  ['Relational modeling and SQL', 'Use this group to design schemas, constraints, query shapes, and relational access patterns that stay understandable as data grows.'],
+  ['Indexing and query performance', 'Use this group to connect query plans, index design, statistics, memory, and workload shape to practical performance outcomes.'],
+  ['Transactions, migrations, and integrity', 'Use this group to protect correctness while schema, code, data volume, and concurrent writes change.'],
+  ['Storage topology and replication', 'Use this group to reason about partitioning, replicas, backups, search indexes, time-series storage, and tenant boundaries.'],
+  ['Analytics, pipelines, and governance', 'Use this group to move data into analytical systems with clear semantics, quality checks, lineage, and retention rules.']
+]);
+
+const platformEngineeringGroups = new Map([
+  ['Source control, CI, and release automation', 'Use this group to turn changes into repeatable, reviewable, reversible delivery paths.'],
+  ['Infrastructure, environments, and cloud networking', 'Use this group to model infrastructure state, environment promotion, DNS, certificates, load balancing, and network reachability.'],
+  ['Containers, orchestration, and runtime platforms', 'Use this group to operate workloads with container hygiene, scheduling, autoscaling, service topology, and runtime constraints.'],
+  ['Security, identity, and supply chain', 'Use this group to control secrets, permissions, artifact trust, policy, and blast radius across the platform.'],
+  ['Observability, incidents, and operations', 'Use this group to make production ownership measurable, alertable, recoverable, and improvable after incidents.'],
+  ['Developer experience and platform product', 'Use this group to build internal platforms, templates, local environments, and APIs that make good engineering paths easy to follow.']
+]);
+
+const networkEngineeringGroups = new Map([
+  ['IP addressing and routing fundamentals', 'Use this group to reason about address space, route selection, NAT, and global traffic paths before blaming application code.'],
+  ['DNS, TLS, and edge delivery', 'Use this group to connect names, certificates, proxies, CDNs, caches, and edge routing to real production reachability.'],
+  ['Transport protocols and performance', 'Use this group to explain latency, connection setup, packet loss, congestion, MTU behavior, and load-balancing effects.'],
+  ['Security and access control', 'Use this group to make network access explicit through firewalls, private links, zero-trust policy, and traffic protection.'],
+  ['Service networking and cloud topology', 'Use this group to design how services, VPCs, gateways, regions, discovery, and address families connect.'],
+  ['Observability and troubleshooting', 'Use this group to diagnose network behavior with captures, traces, probes, SLOs, and incident triage routines.']
+]);
+
 const domains = [
   {
     domain: 'Frontend',
     folder: 'frontend',
     records: frontend,
-    groups: frontendGroups
+    groups: frontendGroups,
+    defaultRoleTags: ['sr', 'frontend']
   },
   {
     domain: 'Backend',
     folder: 'backend',
     records: backend,
-    groups: backendGroups
+    groups: backendGroups,
+    defaultRoleTags: ['sr', 'backend']
   },
   {
     domain: 'System Design',
     folder: 'system-design',
     records: systemDesign,
-    groups: systemDesignGroups
+    groups: systemDesignGroups,
+    defaultRoleTags: ['sr', 'system']
   },
   {
     domain: 'AI Engineering',
     folder: 'ai-engineering',
     records: aiEngineering,
-    groups: aiEngineeringGroups
+    groups: aiEngineeringGroups,
+    defaultRoleTags: ['sr', 'ai']
+  },
+  {
+    domain: 'Data & Storage Engineering',
+    folder: 'data-storage',
+    records: dataStorage,
+    groups: dataStorageGroups,
+    defaultRoleTags: ['sr', 'data']
+  },
+  {
+    domain: 'Platform Engineering',
+    folder: 'platform-engineering',
+    records: platformEngineering,
+    groups: platformEngineeringGroups,
+    defaultRoleTags: ['sr', 'platform']
+  },
+  {
+    domain: 'Network Engineering',
+    folder: 'network-engineering',
+    records: networkEngineering,
+    groups: networkEngineeringGroups,
+    defaultRoleTags: ['sr', 'network']
   }
 ];
 
@@ -100,6 +154,14 @@ const byGroup = (records) => records.reduce((groups, record) => {
 
 const topicFileName = (record) => `${slugify(record.title)}.md`;
 
+const roleTagsFor = (domain, record) => {
+  const tags = record.roleTags ?? domain.defaultRoleTags;
+  if (!Array.isArray(tags) || tags.length === 0) {
+    throw new Error(`Missing role tags for ${domain.domain}: ${record.title}`);
+  }
+  return [...new Set(tags)];
+};
+
 const renderDiagram = (diagram) => {
   if (!diagram) return '';
   return `## Architecture sketch\n\n\`\`\`mermaid\n${diagram.trim()}\n\`\`\`\n\n`;
@@ -111,7 +173,7 @@ const renderRelated = (related) => {
   return `${lines.join('\n')}\n`;
 };
 
-const topicMarkdown = ({ domain, groups, record }) => {
+const topicMarkdown = ({ domain, groups, record, roleTags }) => {
   const snippet = snippets[record.example];
   if (!snippet) throw new Error(`Missing snippet for ${domain}: ${record.title} (${record.example})`);
 
@@ -121,6 +183,7 @@ const topicMarkdown = ({ domain, groups, record }) => {
   return `# ${record.title}\n\n` +
     `**Domain:** ${domain}\n` +
     `**Group:** ${record.group}\n` +
+    `**Role tags:** ${roleTags.join(', ')}\n` +
     `**Example environment:** ${snippet.environment}\n\n` +
     `## Summary\n\n${record.summary}\n\n` +
     `## Why it matters\n\n${note}\n\n` +
@@ -132,7 +195,8 @@ const topicMarkdown = ({ domain, groups, record }) => {
     `A solid explanation should define the mechanism, name the failure mode it prevents or creates, and describe the trade-off you would make in a real JavaScript/Node.js application.\n`;
 };
 
-const indexMarkdown = ({ domain, records, groups }) => {
+const indexMarkdown = ({ domain, records, groups, defaultRoleTags }) => {
+  const domainConfig = { domain, defaultRoleTags };
   const grouped = byGroup(records);
   const lines = [`# ${domain} concepts`, '', `${records.length} topics mapped into summaries and JavaScript/Node.js examples.`, ''];
 
@@ -141,7 +205,7 @@ const indexMarkdown = ({ domain, records, groups }) => {
     if (items.length === 0) continue;
     lines.push(`## ${group}`, '', note, '');
     for (const item of items) {
-      lines.push(`- [${item.title}](topics/${topicFileName(item)})`);
+      lines.push(`- [${item.title}](topics/${topicFileName(item)}) — ${roleTagsFor(domainConfig, item).join(', ')}`);
     }
     lines.push('');
   }
@@ -150,14 +214,15 @@ const indexMarkdown = ({ domain, records, groups }) => {
 };
 
 const writeDomain = async ({ domain, folder, records, groups }) => {
+  const domainConfig = domains.find((item) => item.domain === domain);
   const base = join(root, 'docs', folder);
   const topics = join(base, 'topics');
   await rm(base, { recursive: true, force: true });
   await mkdir(topics, { recursive: true });
-  await writeFile(join(base, 'README.md'), indexMarkdown({ domain, records, groups }));
+  await writeFile(join(base, 'README.md'), indexMarkdown({ domain, records, groups, defaultRoleTags: domainConfig.defaultRoleTags }));
 
   for (const record of records) {
-    await writeFile(join(topics, topicFileName(record)), topicMarkdown({ domain, groups, record }));
+    await writeFile(join(topics, topicFileName(record)), topicMarkdown({ domain, groups, record, roleTags: roleTagsFor(domainConfig, record) }));
   }
 };
 

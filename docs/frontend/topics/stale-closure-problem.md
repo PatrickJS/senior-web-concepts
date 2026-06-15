@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Event loop, data identity, and UI algorithms
+**Role tags:** sr, frontend
 **Example environment:** node
 
 ## Summary

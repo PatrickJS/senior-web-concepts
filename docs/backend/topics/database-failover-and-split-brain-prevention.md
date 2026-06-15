@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** Deployment and reliability patterns
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

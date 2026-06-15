@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Offline, collaboration, and data modeling
+**Role tags:** sr, frontend
 **Example environment:** node
 
 ## Summary

@@ -2,6 +2,7 @@
 
 **Domain:** AI Engineering
 **Group:** Safety, security, and data handling
+**Role tags:** sr, ai
 **Example environment:** node
 
 ## Summary

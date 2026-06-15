@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Memory, streams, and advanced browser APIs
+**Role tags:** sr, frontend
 **Example environment:** node
 
 ## Summary

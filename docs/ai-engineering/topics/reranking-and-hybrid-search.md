@@ -2,6 +2,7 @@
 
 **Domain:** AI Engineering
 **Group:** Retrieval and knowledge grounding
+**Role tags:** sr, ai
 **Example environment:** node
 
 ## Summary

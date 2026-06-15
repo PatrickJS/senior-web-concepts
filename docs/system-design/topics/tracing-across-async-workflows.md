@@ -2,6 +2,7 @@
 
 **Domain:** System Design
 **Group:** Reliability and operations
+**Role tags:** sr, system
 **Example environment:** node
 
 ## Summary

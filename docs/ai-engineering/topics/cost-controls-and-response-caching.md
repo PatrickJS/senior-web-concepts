@@ -2,6 +2,7 @@
 
 **Domain:** AI Engineering
 **Group:** Model operations, cost, and rollout
+**Role tags:** sr, ai
 **Example environment:** node
 
 ## Summary

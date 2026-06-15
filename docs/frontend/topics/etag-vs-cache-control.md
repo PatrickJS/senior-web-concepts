@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Security, networking, and caching
+**Role tags:** sr, frontend
 **Example environment:** node
 
 ## Summary

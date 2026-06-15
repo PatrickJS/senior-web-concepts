@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Observers, layout, paint, and CSS pipeline
+**Role tags:** sr, frontend
 **Example environment:** browser
 
 ## Summary

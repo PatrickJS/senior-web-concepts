@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** Transport and protocol internals
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

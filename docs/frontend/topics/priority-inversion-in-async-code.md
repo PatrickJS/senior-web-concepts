@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Rendering correctness and state
+**Role tags:** sr, frontend
 **Example environment:** node
 
 ## Summary

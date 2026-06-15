@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "JavaScript/Node.js concept and skill map for senior web, system design, and AI engineering topics.",
+  "description": "JavaScript/Node.js concept and skill map for web, system design, AI, data, platform, and network engineering topics.",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -19,6 +19,9 @@
     "example:hashing": "node examples/backend/consistent-hashing.js",
     "example:bloom": "node examples/backend/bloom-filter.js",
     "example:capacity": "node examples/system-design/capacity-estimation.js",
-    "example:vector-search": "node examples/ai-engineering/vector-search.js"
+    "example:vector-search": "node examples/ai-engineering/vector-search.js",
+    "example:query-cost": "node examples/data-storage/query-plan-cost.js",
+    "example:rollout": "node examples/platform-engineering/deployment-rollout.js",
+    "example:cidr": "node examples/network-engineering/cidr-subnet-planner.js"
   }
 }

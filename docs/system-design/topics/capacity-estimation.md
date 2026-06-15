@@ -2,6 +2,7 @@
 
 **Domain:** System Design
 **Group:** Scale, capacity, and latency
+**Role tags:** sr, system
 **Example environment:** node
 
 ## Summary

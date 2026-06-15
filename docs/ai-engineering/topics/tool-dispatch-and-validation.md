@@ -2,6 +2,7 @@
 
 **Domain:** AI Engineering
 **Group:** Structured outputs and tool use
+**Role tags:** sr, ai
 **Example environment:** node
 
 ## Summary

@@ -2,6 +2,7 @@
 
 **Domain:** Frontend
 **Group:** Bundling, modules, and delivery
+**Role tags:** sr, frontend
 **Example environment:** browser
 
 ## Summary

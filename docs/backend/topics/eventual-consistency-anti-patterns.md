@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** Distributed systems and consistency
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

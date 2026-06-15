@@ -2,6 +2,7 @@
 
 **Domain:** Backend
 **Group:** Observability and operations
+**Role tags:** sr, backend
 **Example environment:** node
 
 ## Summary

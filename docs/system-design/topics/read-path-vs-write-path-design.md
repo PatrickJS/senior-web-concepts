@@ -2,6 +2,7 @@
 
 **Domain:** System Design
 **Group:** Boundaries and topology
+**Role tags:** sr, system
 **Example environment:** node
 
 ## Summary
