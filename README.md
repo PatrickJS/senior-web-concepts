@@ -92,3 +92,5 @@ node scripts/generate-docs.js
 ```
 
 That script reads the concept maps from `src/concepts/` and code snippets from `src/examples/snippets.js`, then writes markdown pages under `docs/`.
+
+GitHub Actions also runs the generator on pull requests and pushes to `main`, then fails if the generated `docs/` tree is not committed.
