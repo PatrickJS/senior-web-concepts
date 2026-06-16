@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Senior Web Concepts Explorer</title>
+    <meta name="description" content="Interactive track and knowledge graph explorer for the Senior Web Concepts JavaScript/Node.js map.">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./assets/site.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Senior Web Concepts</p>
+        <h1>Docs and Knowledge Graph</h1>
+        <p class="lede">A generated docs map for tracks, role requirements, topic pages, and role overlap.</p>
+      </div>
+      <nav aria-label="Primary">
+        <a href="#graph-title">Knowledge graph</a>
+        <a href="./roles/README.md">Role paths</a>
+        <a href="https://github.com/PatrickJS/senior-web-concepts">GitHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="graph-panel graph-hero" aria-labelledby="graph-title">
+        <div class="panel-heading graph-heading">
+          <div>
+            <h2 id="graph-title">Knowledge Graph</h2>
+            <p id="graph-note">Click nodes to move between tracks, roles, groups, topics, and role-overlap lines.</p>
+          </div>
+          <a id="focused-link" href="./index.html">Open focused docs</a>
+        </div>
+
+        <svg id="graph" role="img" aria-label="Clickable knowledge graph"></svg>
+
+        <section class="toolbar graph-toolbar" aria-label="Explorer filters">
+          <label class="search-label" for="search">Search concepts, tags, groups, and summaries</label>
+          <input id="search" type="search" autocomplete="off" placeholder="Search for testing, tokens, queues, networking...">
+          <div class="filter-row">
+            <label>
+              Track
+              <select id="track-filter"></select>
+            </label>
+            <label>
+              Level
+              <select id="level-filter"></select>
+            </label>
+            <label>
+              Role
+              <select id="role-filter"></select>
+            </label>
+            <button id="reset-view" type="button">Reset</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="stats-grid" id="stats" aria-label="Repository stats"></section>
+
+      <section class="docs-grid">
+        <aside class="panel">
+          <div class="panel-heading">
+            <h2>Tracks</h2>
+            <p>Click a track to focus the graph and topic list.</p>
+          </div>
+          <div id="track-list" class="card-list"></div>
+        </aside>
+
+        <aside class="panel">
+          <div class="panel-heading">
+            <h2>Role Paths</h2>
+            <p>Generated from role tags on the concept source files.</p>
+          </div>
+          <div id="role-list" class="chip-list"></div>
+        </aside>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Topics</h2>
+            <p id="topic-count"></p>
+          </div>
+          <div id="topic-list" class="topic-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./assets/site.js"></script>
+  </body>
+</html>

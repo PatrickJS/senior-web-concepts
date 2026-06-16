@@ -33,9 +33,14 @@ jobs:
       - name: List topics
         run: npm run list
 
+      - name: Check Pages graph
+        run: npm run check:site
+
       - name: Run representative examples
         run: |
           npm run example:capacity
+          npm run example:module-contract
+          npm run example:tokens
           npm run example:vector-search
           npm run example:query-cost
           npm run example:rollout

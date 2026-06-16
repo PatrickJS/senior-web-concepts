@@ -2,6 +2,12 @@
 
 30 topics mapped into summaries and JavaScript/Node.js examples.
 
+## Career-level progression
+
+- [Junior](../roles/jr.md) — 5 topics
+- [Mid-level](../roles/mid.md) — 12 topics
+- [Senior](../roles/sr.md) — 13 topics
+
 ## IP addressing and routing fundamentals
 
 Use this group to reason about address space, route selection, NAT, and global traffic paths before blaming application code.

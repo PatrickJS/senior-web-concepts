@@ -2,6 +2,13 @@
 
 32 topics mapped into summaries and JavaScript/Node.js examples.
 
+## Career-level progression
+
+- [Junior](../roles/jr.md) — 1 topic
+- [Mid-level](../roles/mid.md) — 10 topics
+- [Senior](../roles/sr.md) — 17 topics
+- [Staff](../roles/staff.md) — 4 topics
+
 ## Source control, CI, and release automation
 
 Use this group to turn changes into repeatable, reviewable, reversible delivery paths.

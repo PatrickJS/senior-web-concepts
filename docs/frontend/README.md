@@ -2,6 +2,10 @@
 
 88 topics mapped into summaries and JavaScript/Node.js examples.
 
+## Career-level progression
+
+- [Senior](../roles/sr.md) — 88 topics
+
 ## Input and accessibility
 
 Use this group to reason about operability, assistive technology behavior, focus/input semantics, and whether UI changes are perceivable to more than just a visual mouse user.

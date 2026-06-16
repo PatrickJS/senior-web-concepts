@@ -11,7 +11,9 @@ npm run example:rate-limit
 npm run example:saga
 npm run example:hashing
 npm run example:bloom
+npm run example:module-contract
 npm run example:capacity
+npm run example:tokens
 npm run example:vector-search
 npm run example:query-cost
 npm run example:rollout

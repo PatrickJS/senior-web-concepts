@@ -3,12 +3,13 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "JavaScript/Node.js concept and skill map for web, system design, AI, data, platform, and network engineering topics.",
+  "description": "JavaScript/Node.js concept and skill map for web, software engineering, design systems, system design, AI, data, platform, and network engineering topics.",
   "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
     "generate": "node scripts/generate-docs.js",
+    "check:site": "node scripts/check-site.js",
     "list": "node scripts/list-topics.js",
     "example:abort": "node examples/frontend/abort-controller.js",
     "example:streams": "node examples/frontend/streaming-fetch-response.js",
@@ -18,7 +19,9 @@
     "example:saga": "node examples/backend/saga-pattern.js",
     "example:hashing": "node examples/backend/consistent-hashing.js",
     "example:bloom": "node examples/backend/bloom-filter.js",
+    "example:module-contract": "node examples/software-engineering/module-boundary-contract.js",
     "example:capacity": "node examples/system-design/capacity-estimation.js",
+    "example:tokens": "node examples/design-system/token-transform.js",
     "example:vector-search": "node examples/ai-engineering/vector-search.js",
     "example:query-cost": "node examples/data-storage/query-plan-cost.js",
     "example:rollout": "node examples/platform-engineering/deployment-rollout.js",

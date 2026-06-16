@@ -2,6 +2,10 @@
 
 72 topics mapped into summaries and JavaScript/Node.js examples.
 
+## Career-level progression
+
+- [Senior](../roles/sr.md) — 72 topics
+
 ## Transport and protocol internals
 
 Use this group to reason about how bytes move over the network, what happens under packet loss, and where protocol-level latency or head-of-line blocking comes from.

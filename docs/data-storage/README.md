@@ -2,6 +2,13 @@
 
 30 topics mapped into summaries and JavaScript/Node.js examples.
 
+## Career-level progression
+
+- [Junior](../roles/jr.md) — 3 topics
+- [Mid-level](../roles/mid.md) — 7 topics
+- [Senior](../roles/sr.md) — 19 topics
+- [Staff](../roles/staff.md) — 1 topic
+
 ## Relational modeling and SQL
 
 Use this group to design schemas, constraints, query shapes, and relational access patterns that stay understandable as data grows.

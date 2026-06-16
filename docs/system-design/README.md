@@ -2,6 +2,10 @@
 
 28 topics mapped into summaries and JavaScript/Node.js examples.
 
+## Career-level progression
+
+- [Senior](../roles/sr.md) — 28 topics
+
 ## Design process and trade-offs
 
 Use this group to turn product goals into explicit requirements, constraints, trade-offs, and decisions that can be revisited later.

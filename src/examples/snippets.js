@@ -2176,5 +2176,572 @@ const nextCheck = triageOrder[0];
 
 console.log(nextCheck);
 `
+  },
+  "design-system-governance": {
+    "environment": "node",
+    "code": `const change = { area: 'token', owner: 'design-system', reviewers: ['design', 'frontend'] };
+const isGoverned = change.owner === 'design-system' && change.reviewers.includes('design') && change.reviewers.includes('frontend');
+
+console.log({ isGoverned });
+`
+  },
+  "design-system-component-inventory": {
+    "environment": "node",
+    "code": `const components = [
+  { name: 'Button', variants: 9, localForks: 0 },
+  { name: 'DatePicker', variants: 4, localForks: 3 }
+];
+
+console.log(components.toSorted((a, b) => b.localForks - a.localForks)[0]);
+`
+  },
+  "design-system-taxonomy": {
+    "environment": "node",
+    "code": `const taxonomy = new Map([
+  ['primitive', ['color', 'space', 'font']],
+  ['component', ['button', 'field', 'dialog']],
+  ['pattern', ['empty-state', 'bulk-action']]
+]);
+
+console.log(taxonomy.get('component'));
+`
+  },
+  "design-system-accessibility-constraint": {
+    "environment": "node",
+    "code": `const meetsTargetSize = ({ width, height }) => width >= 44 && height >= 44;
+const buttonSpec = { width: 40, height: 40, label: 'Close' };
+
+console.log({ passes: meetsTargetSize(buttonSpec), label: buttonSpec.label });
+`
+  },
+  "design-system-contribution-model": {
+    "environment": "node",
+    "code": `const requiredSteps = ['proposal', 'design-review', 'implementation', 'docs', 'release'];
+const contribution = ['proposal', 'design-review', 'implementation', 'docs'];
+
+console.log(requiredSteps.filter((step) => !contribution.includes(step)));
+`
+  },
+  "design-token-architecture": {
+    "environment": "node",
+    "code": `const tokens = {
+  raw: { blue500: '#2563eb' },
+  semantic: { actionBackground: '{raw.blue500}' },
+  component: { buttonPrimaryBackground: '{semantic.actionBackground}' }
+};
+
+console.log(tokens.component.buttonPrimaryBackground);
+`
+  },
+  "design-token-semantic-layers": {
+    "environment": "node",
+    "code": `const semanticName = ({ role, emphasis, state }) => [role, emphasis, state].filter(Boolean).join('.');
+
+console.log(semanticName({ role: 'text', emphasis: 'danger', state: 'hover' }));
+`
+  },
+  "figma-variables-to-code-tokens": {
+    "environment": "node",
+    "code": `const variable = { collection: 'color', mode: 'dark', name: 'surface/default', value: '#111827' };
+const tokenName = variable.name.replaceAll('/', '.');
+
+console.log({ [tokenName]: { [variable.mode]: variable.value } });
+`
+  },
+  "design-system-theme-modes": {
+    "environment": "node",
+    "code": `const token = {
+  name: 'surface.default',
+  values: { light: '#ffffff', dark: '#111827', highContrast: '#000000' }
+};
+
+console.log(token.values.dark);
+`
+  },
+  "design-token-versioning": {
+    "environment": "node",
+    "code": `const tokenChange = { name: 'color.action.primary', type: 'rename', replacement: 'color.action.solid' };
+const migration = tokenChange.type === 'rename' ? 'add alias and warn' : 'release normally';
+
+console.log(migration);
+`
+  },
+  "figma-component-variants": {
+    "environment": "node",
+    "code": `const variants = [
+  { size: 'sm', tone: 'primary', state: 'default' },
+  { size: 'sm', tone: 'primary', state: 'disabled' }
+];
+
+console.log(variants.every((variant) => 'state' in variant));
+`
+  },
+  "figma-auto-layout-responsive": {
+    "environment": "node",
+    "code": `const frame = { direction: 'horizontal', gap: 12, wraps: true, minWidth: 280 };
+const canWrapOnMobile = frame.wraps && frame.minWidth <= 320;
+
+console.log({ canWrapOnMobile });
+`
+  },
+  "design-spec-handoff-quality": {
+    "environment": "node",
+    "code": `const spec = { states: 5, keyboardNotes: true, emptyState: true, loadingState: false };
+const missing = Object.entries(spec).filter(([, value]) => value === false).map(([key]) => key);
+
+console.log(missing);
+`
+  },
+  "design-github-change-flow": {
+    "environment": "node",
+    "code": `const issue = {
+  title: 'Update button focus ring',
+  links: { figma: true, pullRequest: true },
+  labels: ['design-system', 'accessibility']
+};
+
+console.log(issue.links.figma && issue.labels.includes('design-system'));
+`
+  },
+  "design-review-acceptance-criteria": {
+    "environment": "node",
+    "code": `const criteria = ['visual-match', 'keyboard-flow', 'responsive-behavior', 'docs-updated'];
+const review = new Set(['visual-match', 'keyboard-flow', 'docs-updated']);
+
+console.log(criteria.filter((item) => !review.has(item)));
+`
+  },
+  "component-prop-api-design": {
+    "environment": "node",
+    "code": `const buttonProps = ({ tone = 'primary', size = 'md', disabled = false }) => ({
+  className: ['button', 'button-' + tone, 'button-' + size].join(' '),
+  'aria-disabled': disabled || undefined
+});
+
+console.log(buttonProps({ tone: 'danger' }));
+`
+  },
+  "component-slots-escape-hatches": {
+    "environment": "node",
+    "code": `const renderCard = ({ title, actions = '', children }) => {
+  return '<section><h2>' + title + '</h2><div>' + children + '</div>' + actions + '</section>';
+};
+
+console.log(renderCard({ title: 'Profile', children: 'Details' }));
+`
+  },
+  "component-controlled-uncontrolled": {
+    "environment": "node",
+    "code": `const isControlled = (props) => Object.hasOwn(props, 'value') && typeof props.onChange === 'function';
+
+console.log(isControlled({ value: 'search', onChange: () => {} }));
+`
+  },
+  "component-state-contracts": {
+    "environment": "node",
+    "code": `const supportedStates = ['default', 'hover', 'focus-visible', 'disabled', 'loading'];
+const documentedStates = ['default', 'hover', 'focus-visible', 'disabled'];
+
+console.log(supportedStates.filter((state) => !documentedStates.includes(state)));
+`
+  },
+  "component-library-styling-strategy": {
+    "environment": "node",
+    "code": `const cssLayers = ['reset', 'tokens', 'components', 'utilities', 'app-overrides'];
+const appCanOverride = cssLayers.indexOf('app-overrides') > cssLayers.indexOf('components');
+
+console.log({ appCanOverride });
+`
+  },
+  "storybook-design-system-docs": {
+    "environment": "node",
+    "code": `const story = { component: 'Button', args: { tone: 'primary' }, tags: ['docs', 'a11y'] };
+const readyForDocs = story.tags.includes('docs') && story.tags.includes('a11y');
+
+console.log({ readyForDocs });
+`
+  },
+  "design-system-visual-regression": {
+    "environment": "node",
+    "code": `const snapshots = [
+  { component: 'Button', state: 'default', diffPercent: 0 },
+  { component: 'Dialog', state: 'open', diffPercent: 0.8 }
+];
+
+console.log(snapshots.filter((snapshot) => snapshot.diffPercent > 0.5));
+`
+  },
+  "design-system-interaction-a11y-tests": {
+    "environment": "node",
+    "code": `const interactionChecklist = ['tab-order', 'escape-key', 'aria-label', 'focus-return'];
+const passing = new Set(['tab-order', 'escape-key', 'aria-label']);
+
+console.log(interactionChecklist.filter((check) => !passing.has(check)));
+`
+  },
+  "design-system-component-changelog": {
+    "environment": "node",
+    "code": `const change = { component: 'Select', type: 'breaking', migration: 'replace optionRenderer with renderOption' };
+const needsMigrationNote = change.type === 'breaking' && Boolean(change.migration);
+
+console.log({ needsMigrationNote });
+`
+  },
+  "design-system-deprecation-playbook": {
+    "environment": "node",
+    "code": `const deprecation = { component: 'LegacyModal', removedIn: '3.0.0', replacement: 'Dialog' };
+const warning = deprecation.component + ' will be removed in ' + deprecation.removedIn;
+
+console.log({ warning, replacement: deprecation.replacement });
+`
+  },
+  "design-system-adoption-metrics": {
+    "environment": "node",
+    "code": `const apps = [
+  { name: 'admin', systemImports: 42, localComponents: 8 },
+  { name: 'billing', systemImports: 12, localComponents: 20 }
+];
+
+console.log(apps.toSorted((a, b) => b.localComponents - a.localComponents)[0]);
+`
+  },
+  "design-system-roadmap": {
+    "environment": "node",
+    "code": `const roadmapItem = { name: 'Form field refresh', userImpact: 5, implementationCost: 3 };
+const priorityScore = roadmapItem.userImpact / roadmapItem.implementationCost;
+
+console.log({ priorityScore });
+`
+  },
+  "design-debt-triage": {
+    "environment": "node",
+    "code": `const debt = [
+  { issue: 'low contrast alert', impact: 5, effort: 2 },
+  { issue: 'legacy spacing token', impact: 2, effort: 1 }
+];
+
+console.log(debt.toSorted((a, b) => (b.impact / b.effort) - (a.impact / a.effort))[0]);
+`
+  },
+  "figma-github-governance": {
+    "environment": "node",
+    "code": `const changeRecord = { figmaBranch: 'button-focus', issue: 128, pullRequest: 412, release: '2.4.0' };
+const traceable = Object.values(changeRecord).every(Boolean);
+
+console.log({ traceable });
+`
+  },
+  "design-system-package-distribution": {
+    "environment": "node",
+    "code": `const packageMeta = { exports: ['.', './tokens.css'], peerDependencies: ['react'], sideEffects: ['tokens.css'] };
+const canConsumeTokens = packageMeta.exports.includes('./tokens.css');
+
+console.log({ canConsumeTokens });
+`
+  },
+  "software-cohesion-coupling": {
+    "environment": "node",
+    "code": `const userFormatter = {
+  displayName(user) {
+    return [user.firstName, user.lastName].filter(Boolean).join(' ');
+  },
+  initials(user) {
+    return [user.firstName, user.lastName].filter(Boolean).map((part) => part[0]).join('');
+  }
+};
+
+console.log(userFormatter.displayName({ firstName: 'Ada', lastName: 'Lovelace' }));
+`
+  },
+  "software-abstraction-boundaries": {
+    "environment": "node",
+    "code": `const createClock = ({ now = () => new Date() } = {}) => ({
+  todayIso() {
+    return now().toISOString().slice(0, 10);
+  }
+});
+
+console.log(createClock({ now: () => new Date('2030-01-02T00:00:00Z') }).todayIso());
+`
+  },
+  "software-information-hiding": {
+    "environment": "node",
+    "code": `const createUserStore = () => {
+  const users = new Map();
+  return {
+    save(user) { users.set(user.id, { ...user }); },
+    find(id) { return users.get(id) ?? null; }
+  };
+};
+
+const store = createUserStore();
+store.save({ id: 'u1', name: 'Ada' });
+console.log(store.find('u1'));
+`
+  },
+  "software-dependency-direction": {
+    "environment": "node",
+    "code": `const registerUser = ({ saveUser, sendWelcome }) => async (input) => {
+  const user = { id: crypto.randomUUID(), email: input.email.toLowerCase() };
+  await saveUser(user);
+  await sendWelcome(user.email);
+  return user;
+};
+
+console.log(typeof registerUser);
+`
+  },
+  "software-composition-over-inheritance": {
+    "environment": "node",
+    "code": `const withRetry = (operation, attempts = 3) => async (...args) => {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try { return await operation(...args); } catch (error) { lastError = error; }
+  }
+  throw lastError;
+};
+
+console.log(typeof withRetry(async () => 'ok'));
+`
+  },
+  "software-domain-modeling": {
+    "environment": "node",
+    "code": `const canShipOrder = (order) => {
+  return order.status === 'paid' && order.lineItems.length > 0 && order.shippingAddress;
+};
+
+console.log(canShipOrder({ status: 'paid', lineItems: [{ sku: 'book' }], shippingAddress: 'NYC' }));
+`
+  },
+  "software-invariants": {
+    "environment": "node",
+    "code": `const createDateRange = (start, end) => {
+  if (Date.parse(start) > Date.parse(end)) throw new RangeError('start must be before end');
+  return Object.freeze({ start, end });
+};
+
+console.log(createDateRange('2030-01-01', '2030-01-31'));
+`
+  },
+  "software-value-objects": {
+    "environment": "node",
+    "code": `const createMoney = (currency, cents) => {
+  if (!Number.isInteger(cents)) throw new TypeError('cents must be an integer');
+  return Object.freeze({ currency, cents });
+};
+
+console.log(createMoney('USD', 1299));
+`
+  },
+  "software-error-handling": {
+    "environment": "node",
+    "code": `const classifyError = (error) => {
+  if (error.name === 'ValidationError') return 'show-user-message';
+  if (error.retryable) return 'retry';
+  return 'fail-fast';
+};
+
+console.log(classifyError({ name: 'ValidationError' }));
+`
+  },
+  "software-result-types": {
+    "environment": "node",
+    "code": `const ok = (value) => ({ ok: true, value });
+const err = (code, message) => ({ ok: false, error: { code, message } });
+
+const parseId = (value) => value ? ok(String(value)) : err('missing_id', 'id is required');
+console.log(parseId('u1'));
+`
+  },
+  "software-api-contracts": {
+    "environment": "node",
+    "code": `const normalizeCreateUserCommand = (input) => ({
+  email: String(input.email ?? '').trim().toLowerCase(),
+  displayName: String(input.displayName ?? '').trim()
+});
+
+console.log(normalizeCreateUserCommand({ email: ' ADA@EXAMPLE.COM ', displayName: 'Ada' }));
+`
+  },
+  "software-backward-compatibility": {
+    "environment": "node",
+    "code": `const readUserName = (payload) => {
+  return payload.displayName ?? [payload.firstName, payload.lastName].filter(Boolean).join(' ');
+};
+
+console.log(readUserName({ firstName: 'Grace', lastName: 'Hopper' }));
+`
+  },
+  "software-unit-testing": {
+    "environment": "node",
+    "code": `import assert from 'node:assert/strict';
+
+const subtotal = (items) => items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0);
+
+assert.equal(subtotal([{ priceCents: 500, quantity: 2 }]), 1000);
+`
+  },
+  "software-integration-testing": {
+    "environment": "node",
+    "code": `const createService = ({ store }) => ({
+  async create(input) {
+    await store.save(input);
+    return store.find(input.id);
+  }
+});
+
+console.log(typeof createService);
+`
+  },
+  "software-test-doubles": {
+    "environment": "node",
+    "code": `const calls = [];
+const mailer = { send(message) { calls.push(message); } };
+
+mailer.send({ to: 'ada@example.com', template: 'welcome' });
+console.log(calls.length);
+`
+  },
+  "software-property-based-testing": {
+    "environment": "node",
+    "code": `const reverse = (value) => [...value].reverse().join('');
+const samples = ['abc', '', 'racecar', 'software'];
+
+console.log(samples.every((sample) => reverse(reverse(sample)) === sample));
+`
+  },
+  "software-mutation-testing": {
+    "environment": "node",
+    "code": `const isAdult = (age) => age >= 18;
+const tests = [isAdult(18) === true, isAdult(17) === false];
+
+console.log({ testsPass: tests.every(Boolean) });
+`
+  },
+  "software-refactoring-small-steps": {
+    "environment": "node",
+    "code": `const before = (items) => items.filter((item) => item.active).map((item) => item.id);
+const activeIds = (items) => items.filter((item) => item.active).map((item) => item.id);
+
+console.log(JSON.stringify(before([{ id: 1, active: true }])) === JSON.stringify(activeIds([{ id: 1, active: true }])));
+`
+  },
+  "software-code-smells": {
+    "environment": "node",
+    "code": `const smellSignals = { duplicateBranches: 3, functionLines: 90, hiddenGlobals: 1 };
+const investigate = Object.entries(smellSignals).filter(([, count]) => count > 0).map(([name]) => name);
+
+console.log(investigate);
+`
+  },
+  "software-technical-debt": {
+    "environment": "node",
+    "code": `const debt = { reason: 'temporary adapter', owner: 'checkout-team', repayWhen: 'new payments API ships' };
+const actionable = Boolean(debt.reason && debt.owner && debt.repayWhen);
+
+console.log({ actionable });
+`
+  },
+  "software-legacy-code-characterization": {
+    "environment": "node",
+    "code": `import assert from 'node:assert/strict';
+
+const legacyDiscount = (subtotal) => subtotal > 10_000 ? 0.1 : 0;
+assert.equal(legacyDiscount(10_001), 0.1);
+`
+  },
+  "software-feature-toggle-cleanup": {
+    "environment": "node",
+    "code": `const toggles = [
+  { name: 'newCheckout', owner: 'payments', expires: '2030-01-01' },
+  { name: 'oldBanner', owner: null, expires: '2020-01-01' }
+];
+
+console.log(toggles.filter((toggle) => !toggle.owner || Date.parse(toggle.expires) < Date.now()));
+`
+  },
+  "software-code-review": {
+    "environment": "node",
+    "code": `const reviewChecklist = ['behavior', 'tests', 'compatibility', 'operability'];
+const review = new Set(['behavior', 'tests', 'operability']);
+
+console.log(reviewChecklist.filter((item) => !review.has(item)));
+`
+  },
+  "software-adr": {
+    "environment": "node",
+    "code": `const adr = {
+  status: 'accepted',
+  context: 'Need durable background work',
+  decision: 'Use a queue backed by persistent storage',
+  consequences: ['extra operational surface', 'recoverable jobs']
+};
+
+console.log(adr.status);
+`
+  },
+  "software-estimation-risk": {
+    "environment": "node",
+    "code": `const tasks = [
+  { name: 'unknown vendor API', risk: 5, size: 2 },
+  { name: 'button styling', risk: 1, size: 1 }
+];
+
+console.log(tasks.toSorted((a, b) => b.risk - a.risk)[0]);
+`
+  },
+  "software-documentation-code": {
+    "environment": "node",
+    "code": `const commandDoc = {
+  command: 'npm run generate',
+  verifies: ['topic docs', 'role docs'],
+  source: 'src/concepts/*.js'
+};
+
+console.log(commandDoc);
+`
+  },
+  "software-debugging-method": {
+    "environment": "node",
+    "code": `const observation = { expected: 200, actual: 500, changedRecently: ['auth-middleware'] };
+const hypothesis = observation.changedRecently.includes('auth-middleware') ? 'check auth path first' : 'gather more data';
+
+console.log(hypothesis);
+`
+  },
+  "software-logging-context": {
+    "environment": "node",
+    "code": `import { createHash } from 'node:crypto';
+
+const logEvent = ({ requestId, userId, action, outcome }) => ({
+  requestId,
+  userIdHash: createHash('sha256').update(userId).digest('hex').slice(0, 8),
+  action,
+  outcome
+});
+
+console.log(logEvent({ requestId: 'req-1', userId: 'user-123', action: 'save', outcome: 'ok' }));
+`
+  },
+  "software-configuration-boundaries": {
+    "environment": "node",
+    "code": `const readConfig = (env) => {
+  if (!env.API_ORIGIN) throw new Error('API_ORIGIN is required');
+  return Object.freeze({ apiOrigin: new URL(env.API_ORIGIN).origin });
+};
+
+console.log(readConfig({ API_ORIGIN: 'https://api.example.com/v1' }));
+`
+  },
+  "software-performance-profiling": {
+    "environment": "node",
+    "code": `const profile = [
+  { name: 'parse', ms: 12 },
+  { name: 'render', ms: 45 },
+  { name: 'serialize', ms: 8 }
+];
+
+console.log(profile.toSorted((a, b) => b.ms - a.ms)[0]);
+`
   }
 };

@@ -2,6 +2,10 @@
 
 33 topics mapped into summaries and JavaScript/Node.js examples.
 
+## Career-level progression
+
+- [Senior](../roles/sr.md) — 33 topics
+
 ## LLM fundamentals and model behavior
 
 Use this group to understand how model limits, sampling, latency, throughput, and capability fit affect production AI features.
